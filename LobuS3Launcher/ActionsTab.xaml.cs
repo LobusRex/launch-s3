@@ -20,8 +20,8 @@ namespace LobuS3Launcher.Tabs
 
 		private void ActionsTab_Loaded(object sender, RoutedEventArgs e)
 		{
-			activeSavesButton.IsEnabled = Directory.Exists(DocumentFolders.Game.Path);
-			backupSavesButton.IsEnabled = Directory.Exists(DocumentFolders.Launcher.Path);
+			activeSavesButton.IsEnabled = Directory.Exists(Documents.Game.Location);
+			backupSavesButton.IsEnabled = Directory.Exists(Documents.Launcher.Location);
 		}
 
 		private void EnableEPButton_Click(object sender, RoutedEventArgs e)
@@ -61,17 +61,17 @@ namespace LobuS3Launcher.Tabs
 				return;
 
 			// Make the backup.
-			DocumentFolders.BackupSaves();
+			Documents.Game.Saves.BackupTo(Documents.Launcher.Saves);
 		}
 
 		private void BackupSavesButton_Click(object sender, RoutedEventArgs e)
 		{
-			Folder.OpenWithExplorer(DocumentFolders.Launcher.SavePath);
+			Documents.Launcher.Saves.OpenWithExplorer();
 		}
 
 		private void ActiveSavesButton_Click(object sender, RoutedEventArgs e)
 		{
-			Folder.OpenWithExplorer(DocumentFolders.Game.SavePath);
+			Documents.Game.Saves.OpenWithExplorer();
 		}
 
 		private void EnableModsButton_Click(object sender, RoutedEventArgs e)
@@ -87,18 +87,18 @@ namespace LobuS3Launcher.Tabs
 				return;
 
 			// Download and extract FrameworkSetup.zip.
-			Task<ModSelectionManager.DownloadExtractResult> download = ModSelectionManager.EnableSelection();
+			Task<ModManager.DownloadExtractResult> download = ModManager.EnableSelection();
 
 			// Print error messages if anything fails.
 			Task temp = download.ContinueWith(t =>
 			{
 				// The download failed.
-				if (t.Result == ModSelectionManager.DownloadExtractResult.DownloadFailed)
-					ErrorBox.Show($"Unable to download FrameworkSetup.zip from {ModSelectionManager.FrameworkSetupUrl}.");
+				if (t.Result == ModManager.DownloadExtractResult.DownloadFailed)
+					ErrorBox.Show($"Unable to download FrameworkSetup.zip from {ModManager.FrameworkSetupUrl}.");
 
 				// The extraction failed.
-				if (t.Result == ModSelectionManager.DownloadExtractResult.ExtractionFailed)
-					ErrorBox.Show($"Unable to extract FrameworkSetup.zip to {DocumentFolders.Game.Path}.");
+				if (t.Result == ModManager.DownloadExtractResult.ExtractionFailed)
+					ErrorBox.Show($"Unable to extract FrameworkSetup.zip to {Documents.Game.Location}.");
 			});
 		}
 	}

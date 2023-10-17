@@ -25,13 +25,32 @@ namespace LobuS3Launcher.Tabs
 		private void ModsTab_Loaded(object sender, RoutedEventArgs e)
 		{
 			UpdateCheckBoxes();
+
+			addOverrideButton.Click += (sender, e) => AddModButton_Click(sender, e, ModManager.Overrides);
+			addPackageButton.Click += (sender, e) => AddModButton_Click(sender, e, ModManager.Packages);
 		}
 
 		private void UpdateCheckBoxes()
 		{
 			// Get all available mods.
-			Dictionary<string, bool> mods = ModSelectionManager.GetAvailableAndSelected();
+			Dictionary<string, bool> overrides = ModManager.Overrides.GetAvailableAndSelected();
+			Dictionary<string, bool> packages = ModManager.Packages.GetAvailableAndSelected();
 
+			List <CheckBox> overrideBoxes = CreateCheckBoxes(overrides, ModManager.Overrides);
+			List<CheckBox> packageBoxes = CreateCheckBoxes(packages, ModManager.Packages);
+
+			// Add the new CheckBoxes to the window.
+			overridesContainer.Children.Clear();
+			foreach (CheckBox checkBox in overrideBoxes)
+				overridesContainer.Children.Add(checkBox);
+
+			packagesContainer.Children.Clear();
+			foreach (CheckBox checkBox in packageBoxes)
+				packagesContainer.Children.Add(checkBox);
+		}
+
+		private List<CheckBox> CreateCheckBoxes(Dictionary<string, bool> mods, ModSelector modSelector)
+		{
 			// Create a CheckBox for each mod.
 			List<CheckBox> checkBoxes = new List<CheckBox>();
 			foreach (KeyValuePair<string, bool> mod in mods)
@@ -49,8 +68,8 @@ namespace LobuS3Launcher.Tabs
 			// Add CheckBox events.
 			foreach (CheckBox checkBox in checkBoxes)
 			{
-				checkBox.Checked += CheckBox_Checked;
-				checkBox.Unchecked += CheckBox_Unchecked;
+				checkBox.Checked += (sender, e) => CheckBox_Checked(sender, e, modSelector);
+				checkBox.Unchecked += (sender, e) => CheckBox_Unchecked(sender, e, modSelector);
 			}
 
 			// Add a context menu to all CheckBoxes.
@@ -65,17 +84,14 @@ namespace LobuS3Launcher.Tabs
 					Icon = new SymbolIcon(Symbol.Delete),
 					CommandParameter = checkBox,
 				};
-				menuDelete.Click += MenuDelete_Click;
+				menuDelete.Click += (sender, e) => MenuDelete_Click(sender, e, modSelector);
 				contextMenu.Items.Add(menuDelete);
 			}
 
-			// Add the new CheckBoxes to the window.
-			modsContainer.Children.Clear();
-			foreach (CheckBox checkBox in checkBoxes)
-				modsContainer.Children.Add(checkBox);
+			return checkBoxes;
 		}
 
-		private void MenuDelete_Click(object sender, RoutedEventArgs e)
+		private void MenuDelete_Click(object sender, RoutedEventArgs e, ModSelector modSelector)
 		{
 			if (sender is not MenuItem menuItem)
 				return;
@@ -86,39 +102,14 @@ namespace LobuS3Launcher.Tabs
 			if (checkBox.Content is not string name)
 				return;
 
-			ModSelectionManager.Delete(name);
+			// Delete the mod.
+			modSelector.Delete(name);
 
 			// Update the tab.
 			UpdateCheckBoxes();
 		}
 
-		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-		{
-			// Get the mod name.
-			CheckBox checkBox = (CheckBox)sender;
-			string name = (string)checkBox.Content;
-
-			// Deselect the mod.
-			ModSelectionManager.Deselect(name);
-
-			// Update the tab.
-			UpdateCheckBoxes();
-		}
-
-		private void CheckBox_Checked(object sender, RoutedEventArgs e)
-		{
-			// Get the mod name.
-			CheckBox checkBox = (CheckBox)sender;
-			string name = (string)checkBox.Content;
-
-			// Deselect the mod.
-			ModSelectionManager.Select(name);
-
-			// Update the tab.
-			UpdateCheckBoxes();
-		}
-
-		private void AddModButton_Click(object sender, RoutedEventArgs e)
+		private void AddModButton_Click(object sender, RoutedEventArgs e, ModSelector modSelector)
 		{
 			var dialog = new Microsoft.Win32.OpenFileDialog();
 			dialog.DefaultExt = ".package";
@@ -130,10 +121,36 @@ namespace LobuS3Launcher.Tabs
 			{
 				string filename = dialog.FileName;
 
-				ModSelectionManager.Add(filename);
+				modSelector.Add(filename);
 
 				UpdateCheckBoxes();
 			}
+		}
+
+		private void CheckBox_Unchecked(object sender, RoutedEventArgs e, ModSelector modSelector)
+		{
+			// Get the mod name.
+			CheckBox checkBox = (CheckBox)sender;
+			string name = (string)checkBox.Content;
+
+			// Deselect the mod.
+			modSelector.Deselect(name);
+
+			// Update the tab.
+			UpdateCheckBoxes();
+		}
+
+		private void CheckBox_Checked(object sender, RoutedEventArgs e, ModSelector mods)
+		{
+			// Get the mod name.
+			CheckBox checkBox = (CheckBox)sender;
+			string name = (string)checkBox.Content;
+
+			// Select the mod.
+			mods.Select(name);
+
+			// Update the tab.
+			UpdateCheckBoxes();
 		}
 
 		private void Hyperlink_Click(object sender, RoutedEventArgs e)
