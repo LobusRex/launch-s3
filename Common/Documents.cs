@@ -11,6 +11,14 @@
 
 			Launcher = new DocumentsFolder(Path.Combine(documents, "Launch S3"));
 			Game = new DocumentsFolder(Path.Combine(documents, @"Electronic Arts\The Sims 3"));
+
+			CreateFolders();
+		}
+
+		public static void CreateFolders()
+		{
+			Launcher.CreateFolders();
+			Game.CreateFolders();
 		}
 	}
 }

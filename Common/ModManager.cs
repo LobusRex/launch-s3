@@ -29,6 +29,9 @@ namespace Common
 
 		public static Task<DownloadExtractResult> EnableSelection()
 		{
+			// Make sure the documents directories exist.
+			Documents.CreateFolders();
+
 			return DownloadFrameworkSetup();
 		}
 

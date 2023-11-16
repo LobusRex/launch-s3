@@ -14,14 +14,6 @@ namespace LobuS3Launcher.Tabs
 		public ActionsTab()
 		{
 			InitializeComponent();
-
-			Loaded += ActionsTab_Loaded;
-		}
-
-		private void ActionsTab_Loaded(object sender, RoutedEventArgs e)
-		{
-			activeSavesButton.IsEnabled = Directory.Exists(Documents.Game.Location);
-			backupSavesButton.IsEnabled = Directory.Exists(Documents.Launcher.Location);
 		}
 
 		private void EnableEPButton_Click(object sender, RoutedEventArgs e)

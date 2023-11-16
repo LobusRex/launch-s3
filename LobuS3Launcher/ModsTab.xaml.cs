@@ -36,7 +36,8 @@ namespace LobuS3Launcher.Tabs
 			Dictionary<string, bool> overrides = ModManager.Overrides.GetAvailableAndSelected();
 			Dictionary<string, bool> packages = ModManager.Packages.GetAvailableAndSelected();
 
-			List <CheckBox> overrideBoxes = CreateCheckBoxes(overrides, ModManager.Overrides);
+			// Create a CheckBox for each mod.
+			List<CheckBox> overrideBoxes = CreateCheckBoxes(overrides, ModManager.Overrides);
 			List<CheckBox> packageBoxes = CreateCheckBoxes(packages, ModManager.Packages);
 
 			// Add the new CheckBoxes to the window.

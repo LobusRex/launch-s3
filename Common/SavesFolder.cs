@@ -7,6 +7,9 @@
 
 		public void BackupTo(Folder target)
 		{
+			// Make sure the documents directories exist.
+			Documents.CreateFolders();
+
 			string backupName = "Backup " + DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss");
 
 			RecursiveSaveBackup(Location, Path.Combine(target.Location, backupName));
@@ -33,6 +36,12 @@
 			// Copy all files within the save directory.
 			foreach (FileInfo file in source.GetFiles())
 				file.CopyTo(Path.Combine(target.FullName, file.Name));
+		}
+
+		internal void CreateFolders()
+		{
+			// Create this directory.
+			Directory.CreateDirectory(Location);
 		}
 	}
 }

@@ -17,6 +17,9 @@
 		{
 			Dictionary<string, bool> mods = new Dictionary<string, bool>();
 
+			// Make sure the documents directories exist.
+			Documents.CreateFolders();
+
 			// Get the mods from the games folder.
 			DirectoryInfo gameModsFolder = new DirectoryInfo(Game.Location);
 			foreach (FileInfo file in gameModsFolder.GetFiles("*.package"))
