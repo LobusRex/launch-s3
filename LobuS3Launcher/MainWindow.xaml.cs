@@ -21,13 +21,13 @@ namespace LobuS3Launcher
 			modsTab.TabItemActions = tabItemActions;
 		}
 
-		private void LaunchButton_Click(object sender, RoutedEventArgs e)
+		private async void LaunchButton_Click(object sender, RoutedEventArgs e)
 		{
 			// Get the path to the base game installation.
 			string? baseGamePath = GameDirectory.BaseGamePath;
 			if (baseGamePath == null)
 			{
-				ErrorBox.Show("Unable to get the game location from the Windows Registry.");
+				await ErrorDialog.Show("Unable to get the game location from the Windows Registry.");
 				return;
 			}
 

@@ -119,7 +119,7 @@ namespace LobuS3Launcher.Tabs
 				CheckBox.Unchecked += CheckBox_Unchecked;
 			}
 
-			private void CheckBox_Checked(object sender, RoutedEventArgs e)
+			private async void CheckBox_Checked(object sender, RoutedEventArgs e)
 			{
 				try
 				{
@@ -127,7 +127,7 @@ namespace LobuS3Launcher.Tabs
 				}
 				catch (RegistryKeyNotFoundException)
 				{
-					ErrorBox.Show("Unable to read the required Windows Registry key to enable this expansion.");
+					await ErrorDialog.Show("Unable to read the required Windows Registry key to enable this expansion.");
 					SetCheckBoxChecked(false);
 				}
 			}

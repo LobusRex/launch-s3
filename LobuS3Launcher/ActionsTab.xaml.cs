@@ -1,4 +1,5 @@
 ﻿using Common;
+using ModernWpf.Controls;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,7 +17,7 @@ namespace LobuS3Launcher.Tabs
 			InitializeComponent();
 		}
 
-		private void EnableEPButton_Click(object sender, RoutedEventArgs e)
+		private async void EnableEPButton_Click(object sender, RoutedEventArgs e)
 		{
 			try
 			{
@@ -24,11 +25,11 @@ namespace LobuS3Launcher.Tabs
 			}
 			catch (RegistryKeyNotFoundException)
 			{
-				ErrorBox.Show("Unable to get the game location from the Windows Registry.");
+				await ErrorDialog.Show("Unable to get the game location from the Windows Registry.");
 			}
 		}
 
-		private void DisableEPButton_Click(object sender, RoutedEventArgs e)
+		private async void DisableEPButton_Click(object sender, RoutedEventArgs e)
 		{
 			try
 			{
@@ -36,20 +37,23 @@ namespace LobuS3Launcher.Tabs
 			}
 			catch (RegistryKeyNotFoundException)
 			{
-				ErrorBox.Show("Unable to get the game location from the Windows Registry.");
+				await ErrorDialog.Show("Unable to get the game location from the Windows Registry.");
 			}
 		}
 
-		private void BackupButton_Click(object sender, RoutedEventArgs e)
+		private async void BackupButton_Click(object sender, RoutedEventArgs e)
 		{
 			// Ask the user if they are sure.
-			string message = "Do you want to make a backup of all saves? Make sure that the disk has enough space to fit the backup.";
-			string caption = "Create backup";
-			MessageBoxImage icon = MessageBoxImage.Question;
-			MessageBoxButton button = MessageBoxButton.YesNoCancel;
-			bool doBackup = MessageBox.Show(message, caption, button, icon).Equals(MessageBoxResult.Yes);
-
-			if (!doBackup)
+			ContentDialog dialog = new ContentDialog()
+			{
+				Title = "Create backup",
+				Content = "Do you want to make a backup of all saves? Make sure that the disk has enough space to fit the backup.",
+				CloseButtonText = "No",
+				PrimaryButtonText = "Yes",
+			};
+			ContentDialogResult dialogResult = await dialog.ShowAsync();
+			
+			if (dialogResult != ContentDialogResult.Primary)
 				return;
 
 			// Make the backup.
@@ -66,32 +70,31 @@ namespace LobuS3Launcher.Tabs
 			Documents.Game.Saves.OpenWithExplorer();
 		}
 
-		private void EnableModsButton_Click(object sender, RoutedEventArgs e)
+		private async void EnableModsButton_Click(object sender, RoutedEventArgs e)
 		{
 			// Ask the user if they are sure.
-			string message = "Do you want to set up modding? Doing so requires an internet connection to download FrameworkSetup.zip from modthesims.info.";
-			string caption = "Set up modding";
-			MessageBoxImage icon = MessageBoxImage.Question;
-			MessageBoxButton button = MessageBoxButton.YesNoCancel;
-			bool doSetup = MessageBox.Show(message, caption, button, icon).Equals(MessageBoxResult.Yes);
+			ContentDialog dialog = new ContentDialog()
+			{
+				Title = "Set up modding",
+				Content = "Do you want to set up modding? Doing so requires an internet connection to download FrameworkSetup.zip from modthesims.info.",
+				PrimaryButtonText = "Yes",
+				CloseButtonText = "No",
+			};
+			ContentDialogResult dialogResult = await dialog.ShowAsync();
 
-			if (!doSetup)
+			if (dialogResult != ContentDialogResult.Primary)
 				return;
 
 			// Download and extract FrameworkSetup.zip.
-			Task<ModManager.DownloadExtractResult> download = ModManager.EnableSelection();
+			ModManager.DownloadExtractResult result = await ModManager.EnableSelection();
 
-			// Print error messages if anything fails.
-			Task temp = download.ContinueWith(t =>
-			{
-				// The download failed.
-				if (t.Result == ModManager.DownloadExtractResult.DownloadFailed)
-					ErrorBox.Show($"Unable to download FrameworkSetup.zip from {ModManager.FrameworkSetupUrl}.");
+			// Print error message if the download failed.
+			if (result == ModManager.DownloadExtractResult.DownloadFailed)
+				await ErrorDialog.Show($"Unable to download FrameworkSetup.zip from {ModManager.FrameworkSetupUrl}.");
 
-				// The extraction failed.
-				if (t.Result == ModManager.DownloadExtractResult.ExtractionFailed)
-					ErrorBox.Show($"Unable to extract FrameworkSetup.zip to {Documents.Game.Location}.");
-			});
+			// Print error message if the extraction failed.
+			if (result == ModManager.DownloadExtractResult.ExtractionFailed)
+				await ErrorDialog.Show($"Unable to extract FrameworkSetup.zip to {Documents.Game.Location}.");
 		}
 	}
 }
