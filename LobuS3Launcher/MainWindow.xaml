@@ -35,10 +35,10 @@
 			</TabItem>-->
 
 			<TabItem
-				x:Name="tabItem2"
+				x:Name="tabItemExpansions"
 				Header="Expansions"
 				Selector.IsSelected="True">
-				<tabs:EPTab x:Name="EPTab" Margin="20,0" />
+				<tabs:ExpansionTab x:Name="expansionTab" Margin="20,0" />
 			</TabItem>
 
 			<!--<TabItem x:Name="tabItem3" Header="Custom Content">

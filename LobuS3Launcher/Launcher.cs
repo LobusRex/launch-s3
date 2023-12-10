@@ -17,7 +17,7 @@ namespace LobuS3Launcher
 		public static void Launch(string baseGamePath, bool startSingleCore)
 		{
 			// Select which TS3*.exe to run.
-			bool selectionEnabled = EPSelectionManager.GetSelectionEnabled();
+			bool selectionEnabled = ExpansionManager.GetSelectionEnabled();
 			string newGamePath = Path.Combine(baseGamePath, GameDirectory.NewGame);
 			string oldGamePath = Path.Combine(baseGamePath, GameDirectory.OldGame);
 			string TS3Path = selectionEnabled ? newGamePath : oldGamePath;

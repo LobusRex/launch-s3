@@ -21,7 +21,7 @@ namespace LobuS3Launcher.Tabs
 		{
 			try
 			{
-				EPSelectionManager.SetSelectionEnabled(true, true, true);
+				ExpansionManager.SetSelectionEnabled(true, true, true);
 			}
 			catch (RegistryKeyNotFoundException)
 			{
@@ -33,7 +33,7 @@ namespace LobuS3Launcher.Tabs
 		{
 			try
 			{
-				EPSelectionManager.SetSelectionEnabled(false, true, true);
+				ExpansionManager.SetSelectionEnabled(false, true, true);
 			}
 			catch (RegistryKeyNotFoundException)
 			{
@@ -47,7 +47,7 @@ namespace LobuS3Launcher.Tabs
 			ContentDialog dialog = new ContentDialog()
 			{
 				Title = "Create backup",
-				Content = "Do you want to make a backup of all saves? Make sure that the disk has enough space to fit the backup.",
+				Content = "Do you want to make a backup of all saves? Make sure that the disc has enough space to fit the backup.",
 				CloseButtonText = "No",
 				PrimaryButtonText = "Yes",
 			};

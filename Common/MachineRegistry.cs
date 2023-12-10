@@ -1,19 +1,21 @@
 ﻿using Microsoft.Win32;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Diagnostics;
 
 namespace Common
 {
 	public static class MachineRegistry
 	{
 		public static string SoftwarePath { get; } = @"SOFTWARE\WOW6432Node";
-		public static string SimsKey { get; } = "Sims";
+		public static string SimsDiscKey { get; } = "Sims";
+		public static string SimsSteamKey { get; } = "Sims(Steam)";
 		public static string SimLKey { get; } = "SimL";
 		public static string BaseGameKey { get; } = "The Sims 3";
 
 		public static string GetBaseBinPath()
 		{
-			using RegistryKey gameKey = Registry.LocalMachine.OpenSubKey(GetFullKey(SimsKey, BaseGameKey)) ?? throw new RegistryKeyNotFoundException();
+			using RegistryKey gameKey = Registry.LocalMachine.OpenSubKey(GetFullKey(SimsDiscKey, BaseGameKey)) ?? throw new RegistryKeyNotFoundException();
 
 			string name = "ExePath";
 
@@ -21,6 +23,46 @@ namespace Common
 			object value = gameKey.GetValue(name) ?? throw new RegistryKeyNotFoundException();
 			
 			return ((string)value).Replace(@"\TS3.exe", "");
+		}
+
+		public static string? GetValue(string simsKey, string gameKey, string name)
+		{
+			// Open the key.
+			string key = GetFullKey(simsKey, gameKey);
+			using RegistryKey? registryKey = Registry.LocalMachine.OpenSubKey(key);
+
+			// Return false if the key does not exist.
+			if (registryKey == null)
+				return null;
+
+			// Return the value.
+			return (string?)registryKey.GetValue(name);
+		}
+
+		public static void CreateValue(string simKey, string gameKey, string name, string value)
+		{
+			// Open the key.
+			string key = GetFullKey(simKey, gameKey);
+			using RegistryKey? regKey = Registry.LocalMachine.OpenSubKey(key, RegistryKeyPermissionCheck.ReadWriteSubTree);
+
+			if (regKey == null)
+				return;
+
+			// Set the value.
+			regKey.SetValue(name, value);
+		}
+
+		public static void CreateKey(string simKey, string gameKey)
+		{
+			// Open the parent key.
+			using RegistryKey? registryKey = Registry.LocalMachine.OpenSubKey(GetFullKey(simKey), RegistryKeyPermissionCheck.ReadWriteSubTree);
+			if (registryKey == null)
+				throw new RegistryKeyNotFoundException();
+
+			// Create the sub key.
+			registryKey.CreateSubKey(gameKey);
+
+			Trace.WriteLine("Key created");
 		}
 
 		public static string GetFullKey(string simsKey, string gameKey)

@@ -2,32 +2,8 @@
 
 namespace Common
 {
-	public static class EPSelectionManager
+	public static class ExpansionManager
 	{
-		public static bool GetInstalled(string gameKey)
-		{
-			// Check if this expansion has a sub key in Sims.
-			return MachineRegistry.KeyExists(MachineRegistry.SimsKey, gameKey);
-		}
-
-		public static bool GetSelected(string gameKey)
-		{
-			// Check if this expansion has a sub key in SimL.
-			return MachineRegistry.KeyExists(MachineRegistry.SimLKey, gameKey);
-		}
-
-		public static void Select(string gameKey)
-		{
-			// Copy the expansion key to SimL when the box is checked.
-			MachineRegistry.CopyKey(MachineRegistry.SimsKey, MachineRegistry.SimLKey, gameKey);
-		}
-
-		public static void Deselect(string gameKey)
-		{
-			// Remove the expansion key from SimL when the box is unchecked.
-			MachineRegistry.DeleteKey(MachineRegistry.SimLKey, gameKey);
-		}
-
 		public static bool GetSelectionEnabled()
 		{
 			// EP Selection is considered enabled if both the "SimL\The Sims 3" registry key and TS3L.exe exist.
@@ -52,8 +28,12 @@ namespace Common
 
 		public static Process SetSelectionEnabled(bool enable, bool elevated, bool hideWindow)
 		{
+			Trace.WriteLine(enable ? "Enable" : "Disable");
+
 			// Get the path to the base game installation.
 			string baseGamePath = MachineRegistry.GetBaseBinPath();
+
+			Trace.WriteLine(baseGamePath);
 
 			// Create the expansion enabler process.
 			Process process = new Process();

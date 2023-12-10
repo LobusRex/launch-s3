@@ -26,7 +26,7 @@ namespace ExpansionEnabler
 
 			ShowOutput = volume.ToLower() != "quiet";
 
-			string simsKey = MachineRegistry.SimsKey;
+			string simsKey = MachineRegistry.SimsDiscKey;
 			string simLKey = MachineRegistry.SimLKey;
 			string baseGameKey = MachineRegistry.BaseGameKey;
 			string oldGameName = GameDirectory.OldGame;
