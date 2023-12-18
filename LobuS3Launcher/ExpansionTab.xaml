@@ -14,50 +14,7 @@
 
 					<TextBlock TextWrapping="Wrap">Select expansion packs.</TextBlock>
 
-					<local:ExpansionControl
-						x:Name="EP01Expansion"
-						Title="World Adventures"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP02Expansion"
-						Title="Ambitions"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP03Expansion"
-						Title="Late Night"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP04Expansion"
-						Title="Generations"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP05Expansion"
-						Title="Pets"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP06Expansion"
-						Title="Showtime"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP07Expansion"
-						Title="Supernatural"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP08Expansion"
-						Title="Seasons"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP09Expansion"
-						Title="University Life"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP10Expansion"
-						Title="Island Paradise"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="EP11Expansion"
-						Title="Into the Future"
-						Margin="0,10,0,0" />
+					<StackPanel x:Name="EPPanel" />
 
 				</StackPanel>
 			</GroupBox>
@@ -67,42 +24,7 @@
 
 					<TextBlock TextWrapping="Wrap">Select stuff packs.</TextBlock>
 
-					<local:ExpansionControl
-						x:Name="SP01Expansion"
-						Title="High-End Loft Stuff"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="SP02Expansion"
-						Title="Fast Lane Stuff"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="SP03Expansion"
-						Title="Outdoor Living Stuff"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="SP04Expansion"
-						Title="Town Life Stuff"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="SP05Expansion"
-						Title="Master Suite Stuff"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="SP06Expansion"
-						Title="Katy Perry's Sweet Treats"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="SP07Expansion"
-						Title="Diesel Stuff"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="SP08Expansion"
-						Title="70s, 80s, &amp; 90s Stuff"
-						Margin="0,10,0,0" />
-					<local:ExpansionControl
-						x:Name="SP09Expansion"
-						Title="Movie Stuff"
-						Margin="0,10,0,0" />
+					<StackPanel x:Name="SPPanel" />
 
 				</StackPanel>
 			</GroupBox>
