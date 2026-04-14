@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using ModernWpf.Controls;
+﻿using ModernWpf.Controls;
+using System.Threading.Tasks;
 
 namespace LobuS3Launcher;
 

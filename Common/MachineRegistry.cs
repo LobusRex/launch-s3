@@ -1,7 +1,7 @@
 ﻿using Microsoft.Win32;
+using System.Diagnostics;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Diagnostics;
 
 namespace Common;
 
