@@ -28,12 +28,6 @@ internal static class TabSelector
 
 	private static void changeTabTo(TabItem tabItem)
 	{
-
-
-		// Fancy stuff to change tab on the UI thread.
-		TabControl?.Dispatcher.BeginInvoke(() =>
-		{
-			TabControl.SelectedItem = tabItem;
-		});
+		TabControl?.SelectedItem = tabItem;
 	}
 }
