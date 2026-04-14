@@ -1,5 +1,6 @@
 ﻿using Common;
 using LobuS3Launcher.Navigation;
+using Microsoft.Win32;
 using ModernWpf.Controls;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +18,18 @@ public partial class ModsTab : UserControl
 	{
 		InitializeComponent();
 
-		Loaded += ModsTab_Loaded;
+		Loaded += modsTab_Loaded;
 	}
 
-	private void ModsTab_Loaded(object sender, RoutedEventArgs e)
+	private void modsTab_Loaded(object sender, RoutedEventArgs e)
 	{
 		UpdateCheckBoxes();
 
-		addOverrideButton.Click += (sender, e) => AddModButton_Click(sender, e, ModManager.Overrides);
-		addPackageButton.Click += (sender, e) => AddModButton_Click(sender, e, ModManager.Packages);
+		addOverrideButton.Click -= addOverrideButton_Click;
+		addOverrideButton.Click += addOverrideButton_Click;
+
+		addPackageButton.Click -= addPackageButton_Click;
+		addPackageButton.Click += addPackageButton_Click;
 	}
 
 	private void UpdateCheckBoxes()
@@ -107,12 +111,24 @@ public partial class ModsTab : UserControl
 		// Update the tab.
 		UpdateCheckBoxes();
 	}
-
-	private void AddModButton_Click(object sender, RoutedEventArgs e, ModSelector modSelector)
+	
+	private void addPackageButton_Click(object sender, RoutedEventArgs e)
 	{
-		var dialog = new Microsoft.Win32.OpenFileDialog();
-		dialog.DefaultExt = ".package";
-		dialog.Filter = "Package mods |*.package";
+		pickAndAddModTo(ModManager.Packages);
+	}
+
+	private void addOverrideButton_Click(object sender, RoutedEventArgs e)
+	{
+		pickAndAddModTo(ModManager.Overrides);
+	}
+
+	private void pickAndAddModTo(ModSelector modSelector)
+	{
+		var dialog = new OpenFileDialog
+		{
+			DefaultExt = ".package",
+			Filter = "Package mods |*.package"
+		};
 
 		bool? result = dialog.ShowDialog();
 
