@@ -4,96 +4,95 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace LobuS3Launcher.Tabs
+namespace LobuS3Launcher.Tabs;
+
+/// <summary>
+/// Interaction logic for ExpansionControl.xaml
+/// </summary>
+public partial class ExpansionControl : UserControl
 {
-	/// <summary>
-	/// Interaction logic for ExpansionControl.xaml
-	/// </summary>
-	public partial class ExpansionControl : UserControl
+	private Expansion Expansion { get; }
+
+	public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(ExpansionControl));
+
+	public string Title
 	{
-		private Expansion Expansion { get; }
+		get { return (string)GetValue(TitleProperty); }
+		set { SetValue(TitleProperty, value); }
+	}
 
-		public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(ExpansionControl));
+	public ExpansionControl(Expansion expansion)
+	{
+		InitializeComponent();
 
-		public string Title
-		{
-			get { return (string)GetValue(TitleProperty); }
-			set { SetValue(TitleProperty, value); }
-		}
+		DataContext = this;
 
-		public ExpansionControl(Expansion expansion)
-		{
-			InitializeComponent();
+		Expansion = expansion;
 
-			DataContext = this;
+		checkBox.Checked += CheckBox_Checked;
+		checkBox.Unchecked += CheckBox_Unchecked;
+		discCombo.Selected += Disc_Selected;
+		steamCombo.Selected += Steam_Selected;
+	}
 
-			Expansion = expansion;
+	public void UpdateControls()
+	{
+		Expansion.Update();
 
-			checkBox.Checked += CheckBox_Checked;
-			checkBox.Unchecked += CheckBox_Unchecked;
-			discCombo.Selected += Disc_Selected;
-			steamCombo.Selected += Steam_Selected;
-		}
+		List<ExpansionSource> sources = Expansion.Sources.ToList();
 
-		public void UpdateControls()
-		{
-			Expansion.Update();
+		steamCombo.IsEnabled = sources.Contains(ExpansionSource.Steam);
+		discCombo.IsEnabled = sources.Contains(ExpansionSource.Disc);
+		IsEnabled = Expansion.IsInstalled;
 
-			List<ExpansionSource> sources = Expansion.Sources.ToList();
+		SilentCheckUpdate();
+	}
 
-			steamCombo.IsEnabled = sources.Contains(ExpansionSource.Steam);
-			discCombo.IsEnabled = sources.Contains(ExpansionSource.Disc);
-			IsEnabled = Expansion.IsInstalled;
+	private void CheckBox_Checked(object sender, RoutedEventArgs e)
+	{
+		Expansion.Select();
 
-			SilentCheckUpdate();
-		}
+		UpdateControls();
+	}
 
-		private void CheckBox_Checked(object sender, RoutedEventArgs e)
-		{
-			Expansion.Select();
+	private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+	{
+		Expansion.Deselect();
 
-			UpdateControls();
-		}
+		UpdateControls();
+	}
 
-		private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-		{
-			Expansion.Deselect();
+	private void Disc_Selected(object sender, RoutedEventArgs e)
+	{
+		Expansion.SetPreferredSource(ExpansionSource.Disc);
 
-			UpdateControls();
-		}
+		UpdateControls();
+	}
 
-		private void Disc_Selected(object sender, RoutedEventArgs e)
-		{
-			Expansion.SetPreferredSource(ExpansionSource.Disc);
+	private void Steam_Selected(object sender, RoutedEventArgs e)
+	{
+		Expansion.SetPreferredSource(ExpansionSource.Steam);
 
-			UpdateControls();
-		}
+		UpdateControls();
+	}
 
-		private void Steam_Selected(object sender, RoutedEventArgs e)
-		{
-			Expansion.SetPreferredSource(ExpansionSource.Steam);
+	private void SilentCheckUpdate()
+	{
+		// Update the CheckBox.
+		checkBox.Checked -= CheckBox_Checked;
+		checkBox.Unchecked -= CheckBox_Unchecked;
+		checkBox.IsChecked = Expansion.IsSelected;
+		checkBox.Checked += CheckBox_Checked;
+		checkBox.Unchecked += CheckBox_Unchecked;
 
-			UpdateControls();
-		}
+		// Update the Disc ComboBoxItem.
+		discCombo.Selected -= Disc_Selected;
+		discCombo.IsSelected = Expansion.PreferredSource == ExpansionSource.Disc;
+		discCombo.Selected += Disc_Selected;
 
-		private void SilentCheckUpdate()
-		{
-			// Update the CheckBox.
-			checkBox.Checked -= CheckBox_Checked;
-			checkBox.Unchecked -= CheckBox_Unchecked;
-			checkBox.IsChecked = Expansion.IsSelected;
-			checkBox.Checked += CheckBox_Checked;
-			checkBox.Unchecked += CheckBox_Unchecked;
-
-			// Update the Disc ComboBoxItem.
-			discCombo.Selected -= Disc_Selected;
-			discCombo.IsSelected = Expansion.PreferredSource == ExpansionSource.Disc;
-			discCombo.Selected += Disc_Selected;
-
-			// Update the Steam ComboBoxItem.
-			steamCombo.Selected -= Steam_Selected;
-			steamCombo.IsSelected = Expansion.PreferredSource == ExpansionSource.Steam;
-			steamCombo.Selected += Steam_Selected;
-		}
+		// Update the Steam ComboBoxItem.
+		steamCombo.Selected -= Steam_Selected;
+		steamCombo.IsSelected = Expansion.PreferredSource == ExpansionSource.Steam;
+		steamCombo.Selected += Steam_Selected;
 	}
 }

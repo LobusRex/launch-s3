@@ -1,24 +1,23 @@
-﻿using System.Threading.Tasks;
-using ModernWpf.Controls;
+﻿using ModernWpf.Controls;
+using System.Threading.Tasks;
 
-namespace LobuS3Launcher
+namespace LobuS3Launcher;
+
+public static class ErrorDialog
 {
-	public static class ErrorDialog
+	/// <summary>
+	/// Show a ContentDialog, styled for errors.
+	/// </summary>
+	/// <param name="message">The error message to display.</param>
+	public static async Task Show(string message)
 	{
-		/// <summary>
-		/// Show a ContentDialog, styled for errors.
-		/// </summary>
-		/// <param name="message">The error message to display.</param>
-		public static async Task Show(string message)
+		ContentDialog dialog = new ContentDialog()
 		{
-			ContentDialog dialog = new ContentDialog()
-			{
-				Title = "Error",
-				Content = message,
-				CloseButtonText = "OK",
-			};
+			Title = "Error",
+			Content = message,
+			CloseButtonText = "OK",
+		};
 
-			await dialog.ShowAsync();
-		}
+		await dialog.ShowAsync();
 	}
 }

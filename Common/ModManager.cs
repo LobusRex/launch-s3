@@ -1,70 +1,69 @@
 ﻿using System.IO.Compression;
 
-namespace Common
+namespace Common;
+
+public static class ModManager
 {
-	public static class ModManager
+	public static string FrameworkSetupUrl { get; set; } = "https://chii.modthesims.info/FrameworkSetup.zip";
+
+	public static ModSelector Overrides { get; }
+	public static ModSelector Packages { get; }
+
+	static ModManager()
 	{
-		public static string FrameworkSetupUrl { get; set; } = "https://chii.modthesims.info/FrameworkSetup.zip";
+		Folder gameOverrides = Documents.Game.Mods.Overrides;
+		Folder launcherOverrides = Documents.Launcher.Mods.Overrides;
+		Overrides = new ModSelector(gameOverrides, launcherOverrides);
 
-		public static ModSelector Overrides { get; }
-		public static ModSelector Packages { get; }
+		Folder gamePackages = Documents.Game.Mods.Packages;
+		Folder launcherPackages = Documents.Launcher.Mods.Packages;
+		Packages = new ModSelector(gamePackages, launcherPackages);
+	}
 
-		static ModManager()
+	public enum DownloadExtractResult
+	{
+		Succeeded,
+		DownloadFailed,
+		ExtractionFailed,
+	}
+
+	public static Task<DownloadExtractResult> EnableSelection()
+	{
+		// Make sure the documents directories exist.
+		Documents.CreateFolders();
+
+		return DownloadFrameworkSetup();
+	}
+
+	private static async Task<DownloadExtractResult> DownloadFrameworkSetup()
+	{
+		try
 		{
-			Folder gameOverrides = Documents.Game.Mods.Overrides;
-			Folder launcherOverrides = Documents.Launcher.Mods.Overrides;
-			Overrides = new ModSelector(gameOverrides, launcherOverrides);
+			// Download FrameworkSetup.zip.
+			using HttpClient HttpClient = new HttpClient();
+			using Stream data = await HttpClient.GetStreamAsync(FrameworkSetupUrl);
 
-			Folder gamePackages = Documents.Game.Mods.Packages;
-			Folder launcherPackages = Documents.Launcher.Mods.Packages;
-			Packages = new ModSelector(gamePackages, launcherPackages);
+			// Extract the archive to the game documents folder.
+			ZipArchive archive = new ZipArchive(data, ZipArchiveMode.Read);
+			archive.ExtractToDirectory(Documents.Game.Location, true);
 		}
-
-		public enum DownloadExtractResult
+		catch (Exception e)
 		{
-			Succeeded,
-			DownloadFailed,
-			ExtractionFailed,
-		}
-
-		public static Task<DownloadExtractResult> EnableSelection()
-		{
-			// Make sure the documents directories exist.
-			Documents.CreateFolders();
-
-			return DownloadFrameworkSetup();
-		}
-
-		private static async Task<DownloadExtractResult> DownloadFrameworkSetup()
-		{
-			try
+			if (e is InvalidOperationException ||
+				e is HttpRequestException ||
+				e is TaskCanceledException)
 			{
-				// Download FrameworkSetup.zip.
-				using HttpClient HttpClient = new HttpClient();
-				using Stream data = await HttpClient.GetStreamAsync(FrameworkSetupUrl);
-
-				// Extract the archive to the game documents folder.
-				ZipArchive archive = new ZipArchive(data, ZipArchiveMode.Read);
-				archive.ExtractToDirectory(Documents.Game.Location, true);
+				// The Download failed.
+				return DownloadExtractResult.DownloadFailed;
 			}
-			catch (Exception e)
+			else
 			{
-				if (e is InvalidOperationException ||
-					e is HttpRequestException ||
-					e is TaskCanceledException)
-				{
-					// The Download failed.
-					return DownloadExtractResult.DownloadFailed;
-				}
-				else
-				{
-					// The extraction failed.
-					return DownloadExtractResult.ExtractionFailed;
-				}
+				// The extraction failed.
+				return DownloadExtractResult.ExtractionFailed;
 			}
-
-			// The set up was successfull.
-			return DownloadExtractResult.Succeeded;
 		}
+
+		// The set up was successfull.
+		return DownloadExtractResult.Succeeded;
 	}
 }

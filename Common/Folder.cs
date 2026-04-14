@@ -1,77 +1,76 @@
 ﻿using System.Diagnostics;
 
-namespace Common
+namespace Common;
+
+public class Folder
 {
-	public class Folder
+	public string Location { get; }
+
+	public Folder(string path)
 	{
-		public string Location { get; }
+		Location = path;
+	}
 
-		public Folder(string path)
+	public void MoveFile(Folder to, string name)
+	{
+		// Make sure the documents directories exist.
+		Documents.CreateFolders();
+
+		string fromPath = Path.Combine(Location, name);
+		string toPath = Path.Combine(to.Location, name);
+
+		try
 		{
-			Location = path;
+			File.Move(fromPath, toPath, true);
 		}
+		catch { }
+	}
 
-		public void MoveFile(Folder to, string name)
+	public void CopyFileFrom(string from, string name)
+	{
+		// Make sure the documents directories exist.
+		Documents.CreateFolders();
+
+		string fromPath = Path.Combine(from, name);
+		string toPath = Path.Combine(Location, name);
+
+		try
 		{
-			// Make sure the documents directories exist.
-			Documents.CreateFolders();
-
-			string fromPath = Path.Combine(Location, name);
-			string toPath = Path.Combine(to.Location, name);
-
-			try
-			{
-				File.Move(fromPath, toPath, true);
-			}
-			catch { }
+			File.Copy(fromPath, toPath, true);
 		}
+		catch { }
+	}
 
-		public void CopyFileFrom(string from, string name)
+	public void DeleteFile(string name)
+	{
+		// Make sure the documents directories exist.
+		// This is probably not needed.
+		Documents.CreateFolders();
+
+		string path = Path.Combine(Location, name);
+
+		try
 		{
-			// Make sure the documents directories exist.
-			Documents.CreateFolders();
-
-			string fromPath = Path.Combine(from, name);
-			string toPath = Path.Combine(Location, name);
-
-			try
-			{
-				File.Copy(fromPath, toPath, true);
-			}
-			catch { }
+			File.Delete(path);
 		}
+		catch { }
+	}
 
-		public void DeleteFile(string name)
+	public void OpenWithExplorer()
+	{
+		// Make sure the documents directories exist.
+		Documents.CreateFolders();
+
+		// Create an Explorer process.
+		Process process = new Process();
+		process.StartInfo.FileName = "explorer.exe";
+		process.StartInfo.ArgumentList.Add(Location);
+
+		// Start the process.
+		try
 		{
-			// Make sure the documents directories exist.
-			// This is probably not needed.
-			Documents.CreateFolders();
-
-			string path = Path.Combine(Location, name);
-
-			try
-			{
-				File.Delete(path);
-			}
-			catch { }
+			process.Start();
 		}
-
-		public void OpenWithExplorer()
-		{
-			// Make sure the documents directories exist.
-			Documents.CreateFolders();
-
-			// Create an Explorer process.
-			Process process = new Process();
-			process.StartInfo.FileName = "explorer.exe";
-			process.StartInfo.ArgumentList.Add(Location);
-
-			// Start the process.
-			try
-			{
-				process.Start();
-			}
-			catch { }
-		}
+		catch { }
 	}
 }

@@ -1,100 +1,97 @@
 ﻿using Common;
 using ModernWpf.Controls;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace LobuS3Launcher.Tabs
+namespace LobuS3Launcher.Tabs;
+
+/// <summary>
+/// Interaction logic for ActionsTab.xaml
+/// </summary>
+public partial class ActionsTab : UserControl
 {
-	/// <summary>
-	/// Interaction logic for ActionsTab.xaml
-	/// </summary>
-	public partial class ActionsTab : UserControl
+	public ActionsTab()
 	{
-		public ActionsTab()
+		InitializeComponent();
+	}
+
+	private async void EnableEPButton_Click(object sender, RoutedEventArgs e)
+	{
+		try
 		{
-			InitializeComponent();
+			ExpansionManager.SetSelectionEnabled(true, true, true);
 		}
-
-		private async void EnableEPButton_Click(object sender, RoutedEventArgs e)
+		catch (RegistryKeyNotFoundException)
 		{
-			try
-			{
-				ExpansionManager.SetSelectionEnabled(true, true, true);
-			}
-			catch (RegistryKeyNotFoundException)
-			{
-				await ErrorDialog.Show("Unable to get the game location from the Windows Registry.");
-			}
+			await ErrorDialog.Show("Unable to get the game location from the Windows Registry.");
 		}
+	}
 
-		private async void DisableEPButton_Click(object sender, RoutedEventArgs e)
+	private async void DisableEPButton_Click(object sender, RoutedEventArgs e)
+	{
+		try
 		{
-			try
-			{
-				ExpansionManager.SetSelectionEnabled(false, true, true);
-			}
-			catch (RegistryKeyNotFoundException)
-			{
-				await ErrorDialog.Show("Unable to get the game location from the Windows Registry.");
-			}
+			ExpansionManager.SetSelectionEnabled(false, true, true);
 		}
-
-		private async void BackupButton_Click(object sender, RoutedEventArgs e)
+		catch (RegistryKeyNotFoundException)
 		{
-			// Ask the user if they are sure.
-			ContentDialog dialog = new ContentDialog()
-			{
-				Title = "Create backup",
-				Content = "Do you want to make a backup of all saves? Make sure that the disc has enough space to fit the backup.",
-				CloseButtonText = "No",
-				PrimaryButtonText = "Yes",
-			};
-			ContentDialogResult dialogResult = await dialog.ShowAsync();
-			
-			if (dialogResult != ContentDialogResult.Primary)
-				return;
-
-			// Make the backup.
-			Documents.Game.Saves.BackupTo(Documents.Launcher.Saves);
+			await ErrorDialog.Show("Unable to get the game location from the Windows Registry.");
 		}
+	}
 
-		private void BackupSavesButton_Click(object sender, RoutedEventArgs e)
+	private async void BackupButton_Click(object sender, RoutedEventArgs e)
+	{
+		// Ask the user if they are sure.
+		ContentDialog dialog = new ContentDialog()
 		{
-			Documents.Launcher.Saves.OpenWithExplorer();
-		}
+			Title = "Create backup",
+			Content = "Do you want to make a backup of all saves? Make sure that the disc has enough space to fit the backup.",
+			CloseButtonText = "No",
+			PrimaryButtonText = "Yes",
+		};
+		ContentDialogResult dialogResult = await dialog.ShowAsync();
+		
+		if (dialogResult != ContentDialogResult.Primary)
+			return;
 
-		private void ActiveSavesButton_Click(object sender, RoutedEventArgs e)
+		// Make the backup.
+		Documents.Game.Saves.BackupTo(Documents.Launcher.Saves);
+	}
+
+	private void BackupSavesButton_Click(object sender, RoutedEventArgs e)
+	{
+		Documents.Launcher.Saves.OpenWithExplorer();
+	}
+
+	private void ActiveSavesButton_Click(object sender, RoutedEventArgs e)
+	{
+		Documents.Game.Saves.OpenWithExplorer();
+	}
+
+	private async void EnableModsButton_Click(object sender, RoutedEventArgs e)
+	{
+		// Ask the user if they are sure.
+		ContentDialog dialog = new ContentDialog()
 		{
-			Documents.Game.Saves.OpenWithExplorer();
-		}
+			Title = "Set up modding",
+			Content = "Do you want to set up modding? Doing so requires an internet connection to download FrameworkSetup.zip from modthesims.info.",
+			PrimaryButtonText = "Yes",
+			CloseButtonText = "No",
+		};
+		ContentDialogResult dialogResult = await dialog.ShowAsync();
 
-		private async void EnableModsButton_Click(object sender, RoutedEventArgs e)
-		{
-			// Ask the user if they are sure.
-			ContentDialog dialog = new ContentDialog()
-			{
-				Title = "Set up modding",
-				Content = "Do you want to set up modding? Doing so requires an internet connection to download FrameworkSetup.zip from modthesims.info.",
-				PrimaryButtonText = "Yes",
-				CloseButtonText = "No",
-			};
-			ContentDialogResult dialogResult = await dialog.ShowAsync();
+		if (dialogResult != ContentDialogResult.Primary)
+			return;
 
-			if (dialogResult != ContentDialogResult.Primary)
-				return;
+		// Download and extract FrameworkSetup.zip.
+		ModManager.DownloadExtractResult result = await ModManager.EnableSelection();
 
-			// Download and extract FrameworkSetup.zip.
-			ModManager.DownloadExtractResult result = await ModManager.EnableSelection();
+		// Print error message if the download failed.
+		if (result == ModManager.DownloadExtractResult.DownloadFailed)
+			await ErrorDialog.Show($"Unable to download FrameworkSetup.zip from {ModManager.FrameworkSetupUrl}.");
 
-			// Print error message if the download failed.
-			if (result == ModManager.DownloadExtractResult.DownloadFailed)
-				await ErrorDialog.Show($"Unable to download FrameworkSetup.zip from {ModManager.FrameworkSetupUrl}.");
-
-			// Print error message if the extraction failed.
-			if (result == ModManager.DownloadExtractResult.ExtractionFailed)
-				await ErrorDialog.Show($"Unable to extract FrameworkSetup.zip to {Documents.Game.Location}.");
-		}
+		// Print error message if the extraction failed.
+		if (result == ModManager.DownloadExtractResult.ExtractionFailed)
+			await ErrorDialog.Show($"Unable to extract FrameworkSetup.zip to {Documents.Game.Location}.");
 	}
 }
