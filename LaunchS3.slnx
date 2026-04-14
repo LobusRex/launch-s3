@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Common/Common.csproj" />
+  <Project Path="ExpansionEnabler/ExpansionEnabler.csproj" />
+  <Project Path="LobuS3Launcher/LobuS3Launcher.csproj" />
+</Solution>
