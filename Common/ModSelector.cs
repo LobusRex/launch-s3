@@ -1,84 +1,83 @@
-﻿namespace Common
+﻿namespace Common;
+
+public class ModSelector
 {
-	public class ModSelector
+	public Folder Game { get; }
+	public Folder Launcher { get; }
+
+	private static string Extension { get; } = ".package";
+
+	public ModSelector(Folder gameFolder, Folder launcherFolder)
 	{
-		public Folder Game { get; }
-		public Folder Launcher { get; }
+		Game = gameFolder;
+		Launcher = launcherFolder;
+	}
 
-		private static string Extension { get; } = ".package";
+	public Dictionary<string, bool> GetAvailableAndSelected()
+	{
+		Dictionary<string, bool> mods = new Dictionary<string, bool>();
 
-		public ModSelector(Folder gameFolder, Folder launcherFolder)
+		// Make sure the documents directories exist.
+		Documents.CreateFolders();
+
+		// Get the mods from the games folder.
+		DirectoryInfo gameModsFolder = new DirectoryInfo(Game.Location);
+		foreach (FileInfo file in gameModsFolder.GetFiles("*.package"))
 		{
-			Game = gameFolder;
-			Launcher = launcherFolder;
+			string name = Path.GetFileNameWithoutExtension(file.Name);
+
+			// Add the mod to the dictionary.
+			// This mod is selected.
+			mods.Add(name, true);
 		}
 
-		public Dictionary<string, bool> GetAvailableAndSelected()
+		// Get additional mods from the launcher folder.
+		DirectoryInfo launcherModsFolder = new DirectoryInfo(Launcher.Location);
+		foreach (FileInfo file in launcherModsFolder.GetFiles("*.package"))
 		{
-			Dictionary<string, bool> mods = new Dictionary<string, bool>();
+			string name = Path.GetFileNameWithoutExtension(file.Name);
 
-			// Make sure the documents directories exist.
-			Documents.CreateFolders();
-
-			// Get the mods from the games folder.
-			DirectoryInfo gameModsFolder = new DirectoryInfo(Game.Location);
-			foreach (FileInfo file in gameModsFolder.GetFiles("*.package"))
-			{
-				string name = Path.GetFileNameWithoutExtension(file.Name);
-
-				// Add the mod to the dictionary.
-				// This mod is selected.
-				mods.Add(name, true);
-			}
-
-			// Get additional mods from the launcher folder.
-			DirectoryInfo launcherModsFolder = new DirectoryInfo(Launcher.Location);
-			foreach (FileInfo file in launcherModsFolder.GetFiles("*.package"))
-			{
-				string name = Path.GetFileNameWithoutExtension(file.Name);
-
-				// Add the mod if it is not already in the dictionary.
-				// This mod is not selected.
-				mods.TryAdd(name, false);
-			}
-
-			return mods;
+			// Add the mod if it is not already in the dictionary.
+			// This mod is not selected.
+			mods.TryAdd(name, false);
 		}
 
-		public void Select(string name)
-		{
-			string packageName = name + Extension;
+		return mods;
+	}
 
-			// Move the mod to the game mods folder.
-			Launcher.MoveFile(Game, packageName);
-		}
+	public void Select(string name)
+	{
+		string packageName = name + Extension;
 
-		public void Deselect(string name)
-		{
-			string packageName = name + Extension;
+		// Move the mod to the game mods folder.
+		Launcher.MoveFile(Game, packageName);
+	}
 
-			// Move the mod to the launcher mods folder.
-			Game.MoveFile(Launcher, packageName);
-		}
+	public void Deselect(string name)
+	{
+		string packageName = name + Extension;
 
-		public void Add(string packagePath)
-		{
-			FileInfo file = new FileInfo(packagePath);
+		// Move the mod to the launcher mods folder.
+		Game.MoveFile(Launcher, packageName);
+	}
 
-			if (file.DirectoryName == null)
-				return;
+	public void Add(string packagePath)
+	{
+		FileInfo file = new FileInfo(packagePath);
 
-			// Copy the mod to the game mods folder.
-			Game.CopyFileFrom(file.DirectoryName, file.Name);
-		}
+		if (file.DirectoryName == null)
+			return;
 
-		public void Delete(string name)
-		{
-			string packageName = name + Extension;
+		// Copy the mod to the game mods folder.
+		Game.CopyFileFrom(file.DirectoryName, file.Name);
+	}
 
-			// Delete the mod from both/either mod folder.
-			Launcher.DeleteFile(packageName);
-			Game.DeleteFile(packageName);
-		}
+	public void Delete(string name)
+	{
+		string packageName = name + Extension;
+
+		// Delete the mod from both/either mod folder.
+		Launcher.DeleteFile(packageName);
+		Game.DeleteFile(packageName);
 	}
 }

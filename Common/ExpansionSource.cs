@@ -1,8 +1,7 @@
-﻿namespace Common
+﻿namespace Common;
+
+public enum ExpansionSource
 {
-	public enum ExpansionSource
-	{
-		Disc,
-		Steam,
-	}
+	Disc,
+	Steam,
 }
