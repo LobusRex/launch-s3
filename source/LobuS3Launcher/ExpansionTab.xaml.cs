@@ -1,5 +1,5 @@
 ﻿using Common;
-using System;
+using LobuS3Launcher.Navigation;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -98,18 +98,8 @@ public partial class ExpansionTab : UserControl
 			expansion.UpdateControls();
 	}
 
-	private void Hyperlink_Click(object sender, RoutedEventArgs e)
+	private void hyperlink_Click(object sender, RoutedEventArgs e)
 	{
-		if (TabItemActions == null)
-			return;
-
-		try
-		{
-			TabItem tabItem = (TabItem)Parent;
-			TabControl tabControl = (TabControl)tabItem.Parent;
-
-			Dispatcher.BeginInvoke((Action)(() => tabControl.SelectedItem = TabItemActions));
-		}
-		catch { return; }
+		TabSelector.NavigateTo<ActionsTab>();
 	}
 }

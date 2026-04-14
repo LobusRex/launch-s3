@@ -1,4 +1,5 @@
 ﻿using Common;
+using LobuS3Launcher.Navigation;
 using System.Windows;
 
 namespace LobuS3Launcher;
@@ -17,8 +18,7 @@ public partial class MainWindow : Window
 
 	private void MainWindow_Loaded(object sender, RoutedEventArgs e)
 	{
-		expansionTab.TabItemActions = tabItemActions;
-		modsTab.TabItemActions = tabItemActions;
+		TabSelector.TabControl = tabControl;
 	}
 
 	private async void LaunchButton_Click(object sender, RoutedEventArgs e)

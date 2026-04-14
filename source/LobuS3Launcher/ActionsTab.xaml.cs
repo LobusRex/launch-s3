@@ -1,4 +1,5 @@
 ﻿using Common;
+using LobuS3Launcher.Navigation;
 using ModernWpf.Controls;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,13 @@ public partial class ActionsTab : UserControl
 	public ActionsTab()
 	{
 		InitializeComponent();
+
+		Loaded += actionsTab_Loaded;
+	}
+
+	private void actionsTab_Loaded(object sender, RoutedEventArgs e)
+	{
+		TabSelector.Register<ActionsTab>((TabItem)Parent);
 	}
 
 	private async void EnableEPButton_Click(object sender, RoutedEventArgs e)

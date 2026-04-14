@@ -14,7 +14,7 @@
 	ui:WindowHelper.UseModernWindowStyle="True"
 	mc:Ignorable="d">
 	<Grid>
-		<TabControl VerticalAlignment="Stretch" TabStripPlacement="Left">
+		<TabControl x:Name="tabControl" VerticalAlignment="Stretch" TabStripPlacement="Left">
 
 			<ui:TabControlHelper.TabStripHeader>
 				<Button

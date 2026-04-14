@@ -1,6 +1,6 @@
 ﻿using Common;
+using LobuS3Launcher.Navigation;
 using ModernWpf.Controls;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -13,8 +13,6 @@ namespace LobuS3Launcher.Tabs;
 /// </summary>
 public partial class ModsTab : UserControl
 {
-	public TabItem? TabItemActions { get; set; } = null;
-
 	public ModsTab()
 	{
 		InitializeComponent();
@@ -154,18 +152,8 @@ public partial class ModsTab : UserControl
 		UpdateCheckBoxes();
 	}
 
-	private void Hyperlink_Click(object sender, RoutedEventArgs e)
+	private void hyperlink_Click(object sender, RoutedEventArgs e)
 	{
-		if (TabItemActions == null)
-			return;
-
-		try
-		{
-			TabItem tabItem = (TabItem)Parent;
-			TabControl tabControl = (TabControl)tabItem.Parent;
-
-			Dispatcher.BeginInvoke((Action)(() => tabControl.SelectedItem = TabItemActions));
-		}
-		catch { return; }
+		TabSelector.NavigateTo<ActionsTab>();
 	}
 }
