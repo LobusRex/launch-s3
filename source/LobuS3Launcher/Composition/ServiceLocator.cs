@@ -1,4 +1,5 @@
 ﻿using LobuS3Launcher.ExpansionConfiguration;
+using LobuS3Launcher.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -23,6 +24,8 @@ internal class ServiceLocator
 		builder.Services
 			.AddOptions<ExpansionsSection>()
 			.BindConfiguration(ExpansionsSection.SectionName);
+
+		builder.Services.AddSingleton<TabSelector>();
 
 		var host = builder.Build();
 
