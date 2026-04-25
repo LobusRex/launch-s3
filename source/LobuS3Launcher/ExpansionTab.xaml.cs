@@ -3,7 +3,6 @@ using LobuS3Launcher.Composition;
 using LobuS3Launcher.ExpansionConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
 using LobuS3Launcher.Navigation;
 using System.Collections.Generic;
 using System.Linq;
