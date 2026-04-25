@@ -1,6 +1,11 @@
 ﻿using Common;
+using LobuS3Launcher.Composition;
+using LobuS3Launcher.ExpansionConfiguration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,7 +16,10 @@ namespace LobuS3Launcher.Tabs;
 /// </summary>
 public partial class ExpansionTab : UserControl
 {
-	private List<ExpansionControl> ExpansionControls { get; }
+	private IEnumerable<ExpansionControl> ExpansionControls => [
+		.. EPPanel.Children.OfType<ExpansionControl>(),
+		.. SPPanel.Children.OfType<ExpansionControl>()
+		];
 
 	public TabItem? TabItemActions { get; set; } = null;
 
@@ -19,53 +27,30 @@ public partial class ExpansionTab : UserControl
 	{
 		InitializeComponent();
 
-		ExpansionControls = new List<ExpansionControl>();
+		var expansions = ServiceLocator
+			.Instance
+			.Services
+			.GetRequiredService<IOptions<ExpansionsSection>>()
+			.Value;
 
-		// Expansion Packs.
-		ExpansionControl[] expansions = new[]
-		{
-			CreateExpansionControl("World Adventures",          "The Sims 3 World Adventures"),
-			CreateExpansionControl("Ambitions",                 "The Sims 3 Ambitions"),
-			CreateExpansionControl("Late Night",                "The Sims 3 Late Night"),
-			CreateExpansionControl("Titanfall",                 "The Sims 3 Titanfall"),
-			CreateExpansionControl("Generations",               "The Sims 3 Generations"),
-			CreateExpansionControl("Pets",                      "The Sims 3 Pets"),
-			CreateExpansionControl("Showtime",                  "The Sims 3 Showtime"),
-			CreateExpansionControl("Supernatural",              "The Sims 3 Supernatural"),
-			CreateExpansionControl("Seasons",                   "The Sims 3 Seasons"),
-			CreateExpansionControl("University Life",           "The Sims 3 University Life"),
-			CreateExpansionControl("Island Paradise",           "The Sims 3 Island Paradise"),
-			CreateExpansionControl("Into the Future",           "The Sims 3 Into The Future"),
-		};
+		var expansionControls = expansions
+			.ExpansionPacks
+			.Select(createExpansionControl);
 
-		// Stuff Packs.
-		ExpansionControl[] stuffs = new[]
-		{
-			CreateExpansionControl("High-End Loft Stuff",       "The Sims 3 High-End Loft Stuff"),
-			CreateExpansionControl("Fast Lane Stuff",           "The Sims 3 Fast Lane Stuff"),
-			CreateExpansionControl("Outdoor Living Stuff",      "The Sims 3 Outdoor Living Stuff"),
-			CreateExpansionControl("Town Life Stuff",           "The Sims 3 Town Life Stuff"),
-			CreateExpansionControl("Master Suite Stuff",        "The Sims 3 Master Suite Stuff"),
-			CreateExpansionControl("Katy Perry's Sweet Treats", "The Sims 3 Katy Perry Sweet Treats"),
-			CreateExpansionControl("Diesel Stuff",              "The Sims 3 Diesel Stuff"),
-			CreateExpansionControl("70s, 80s, &amp; 90s Stuff", "The Sims 3 70s 80s & 90s Stuff"),
-			CreateExpansionControl("Movie Stuff",               "The Sims 3 Movie Stuff"),
-		};
-
-		ExpansionControls.AddRange(expansions);
-		ExpansionControls.AddRange(stuffs);
-
-		// Add expansions to the window.
-		foreach (var expansion in expansions)
+		foreach (var expansion in expansionControls)
 			EPPanel.Children.Add(expansion);
 
-		foreach (var stuff in stuffs)
+		var stuffControls = expansions
+			.StuffPacks
+			.Select(createExpansionControl);
+
+		foreach (var stuff in stuffControls)
 			SPPanel.Children.Add(stuff);
 
 		Loaded += ExpansionTab_Loaded;
 	}
 
-	private static ExpansionControl CreateExpansionControl(string title, string gameKey)
+	private static ExpansionControl createExpansionControl(string title, string gameKey)
 	{
 		return new ExpansionControl(new Expansion(gameKey))
 		{
@@ -74,12 +59,19 @@ public partial class ExpansionTab : UserControl
 		};
 	}
 
-	private void ExpansionTab_Loaded(object sender, RoutedEventArgs e)
+	private ExpansionControl createExpansionControl(ExpansionItem expansion)
 	{
-		UpdateCheckBoxes();
+		return createExpansionControl(
+			title: expansion.Name,
+			gameKey: expansion.Key);
 	}
 
-	private void UpdateCheckBoxes()
+	private void ExpansionTab_Loaded(object sender, RoutedEventArgs e)
+	{
+		updateCheckBoxes();
+	}
+
+	private void updateCheckBoxes()
 	{
 		bool selectionEnabled = ExpansionManager.GetSelectionEnabled();
 
