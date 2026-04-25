@@ -5,6 +5,11 @@ using System;
 
 namespace LobuS3Launcher.Composition;
 
+/// <summary>
+/// A way to configure services in a central place.
+/// A temporary measure that should eventually be replaced with dependency injection.
+/// Get services by using <see cref="Services"/> from the static <see cref="Instance"/>.
+/// </summary>
 internal class ServiceLocator
 {
 	public static readonly ServiceLocator Instance = new();
