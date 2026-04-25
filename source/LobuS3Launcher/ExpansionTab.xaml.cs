@@ -33,6 +33,15 @@ public partial class ExpansionTab : UserControl
 			.GetRequiredService<IOptions<ExpansionsSection>>()
 			.Value;
 
+		// This should probably be in ExpansionTab_Loaded.
+		// For now, it is left here because it caused a noticable delay when switching tabs.
+		addExpansions(expansions);
+
+		Loaded += ExpansionTab_Loaded;
+	}
+
+	private void addExpansions(ExpansionsSection expansions)
+	{
 		var expansionControls = expansions
 			.ExpansionPacks
 			.Select(createExpansionControl);
@@ -46,8 +55,6 @@ public partial class ExpansionTab : UserControl
 
 		foreach (var stuff in stuffControls)
 			SPPanel.Children.Add(stuff);
-
-		Loaded += ExpansionTab_Loaded;
 	}
 
 	private static ExpansionControl createExpansionControl(string title, string gameKey)
