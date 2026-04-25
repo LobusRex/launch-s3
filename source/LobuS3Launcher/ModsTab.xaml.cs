@@ -1,5 +1,7 @@
 ﻿using Common;
+using LobuS3Launcher.Composition;
 using LobuS3Launcher.Navigation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using ModernWpf.Controls;
 using System.Collections.Generic;
@@ -14,9 +16,16 @@ namespace LobuS3Launcher.Tabs;
 /// </summary>
 public partial class ModsTab : UserControl
 {
+	private readonly TabSelector _tabSelector;
+
 	public ModsTab()
 	{
 		InitializeComponent();
+
+		var serviceProvider = ServiceLocator.Instance.Services;
+
+		_tabSelector = serviceProvider
+			.GetRequiredService<TabSelector>();
 
 		Loaded += modsTab_Loaded;
 	}
@@ -170,6 +179,6 @@ public partial class ModsTab : UserControl
 
 	private void hyperlink_Click(object sender, RoutedEventArgs e)
 	{
-		TabSelector.NavigateTo<ActionsTab>();
+		_tabSelector.NavigateTo<ActionsTab>();
 	}
 }

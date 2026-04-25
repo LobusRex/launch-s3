@@ -21,17 +21,20 @@ public partial class ExpansionTab : UserControl
 		.. SPPanel.Children.OfType<ExpansionControl>()
 		];
 
-	public TabItem? TabItemActions { get; set; } = null;
+	private readonly TabSelector _tabSelector;
 
 	public ExpansionTab()
 	{
 		InitializeComponent();
 
-		var expansions = ServiceLocator
-			.Instance
-			.Services
+		var serviceProvider = ServiceLocator.Instance.Services;
+
+		var expansions = serviceProvider
 			.GetRequiredService<IOptions<ExpansionsSection>>()
 			.Value;
+
+		_tabSelector = serviceProvider
+			.GetRequiredService<TabSelector>();
 
 		// This should probably be in ExpansionTab_Loaded.
 		// For now, it is left here because it caused a noticable delay when switching tabs.
@@ -99,6 +102,6 @@ public partial class ExpansionTab : UserControl
 
 	private void hyperlink_Click(object sender, RoutedEventArgs e)
 	{
-		TabSelector.NavigateTo<ActionsTab>();
+		_tabSelector.NavigateTo<ActionsTab>();
 	}
 }

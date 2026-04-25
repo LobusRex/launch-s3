@@ -1,33 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Linq;
 using System.Windows.Controls;
 
 namespace LobuS3Launcher.Navigation;
 
-internal static class TabSelector
+internal class TabSelector
 {
-	private static readonly Dictionary<Type, TabItem> _tabs = [];
-	
-	public static TabControl? TabControl { get; set; }
+	public TabControl? TabControl { get; set; }
 
-	public static void Register<TTab>(TabItem tabItem) where TTab : UserControl
-	{
-		_tabs[typeof(TTab)] = tabItem;
-	}
-
-	public static void NavigateTo<TTab>() where TTab : UserControl
+	public void NavigateTo<TTab>() where TTab : UserControl
 	{
 		if (TabControl is null)
 			return;
 
-		var tabItem = _tabs[typeof(TTab)];
-		
-		if (TabControl.Items.Contains(tabItem))
-			changeTabTo(tabItem);
-	}
+		var tab = TabControl
+			.Items
+			.OfType<TabItem>()
+			.Select(i => new { Content=i.Content, Item=i })
+			.FirstOrDefault(i => i.Content is TTab);
 
-	private static void changeTabTo(TabItem tabItem)
-	{
-		TabControl?.SelectedItem = tabItem;
+		if (tab is not null)
+			TabControl?.SelectedItem = tab.Item;
 	}
 }

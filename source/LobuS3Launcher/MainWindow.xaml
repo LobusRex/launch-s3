@@ -21,7 +21,7 @@
 					x:Name="launchButton"
 					MinWidth="0"
 					Margin="10"
-					Click="LaunchButton_Click">
+					Click="launchButton_Click">
 					Launch The Sims 3
 				</Button>
 			</ui:TabControlHelper.TabStripHeader>
