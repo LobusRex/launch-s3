@@ -27,6 +27,10 @@ internal class ServiceLocator
 
 		builder.Services.AddSingleton<GameLauncher>();
 
+		// TODO: Feature toggle these from appsettings?
+		builder.Services.AddSingleton<IPostLaunchJob, CoreLimitingPostLaunchJob>();
+		builder.Services.AddSingleton<IPostLaunchJob, QuitAfter10>();
+
 		var host = builder.Build();
 
 		Services = host.Services;

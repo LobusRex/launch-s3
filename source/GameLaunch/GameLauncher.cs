@@ -1,36 +1,34 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace GameLaunch;
 
-public class GameLauncher
+public interface IPostLaunchJob
 {
-	private readonly bool _startSingleCore;
+	public void Run(Process process);
+}
 
-	public GameLauncher()
+public class QuitAfter10 : IPostLaunchJob
+{
+	public void Run(Process process)
 	{
-		// TODO: Move this to an options object.
-		_startSingleCore = true;
+		// I don't know how thread-bad this is...
+		new Thread(() => kill(process)).Start();
 	}
 
-	public void Launch(string path)
+	private static void kill(Process process)
 	{
-		Trace.WriteLine("Launching game at " + path);
+		Thread.Sleep(TimeSpan.FromSeconds(10));
 
-		var process = new Process();
-		process.StartInfo.FileName = path;
-		try
-		{
-			bool started = process.Start();
+		process.Kill();
+	}
+}
 
-			Trace.WriteLine(started ? "Started" : "Not started");
-		}
-		catch
-		{
-			return;
-		}
-
-		if (_startSingleCore)
-			new Thread(() => limitProcessCores(process)).Start();
+public class CoreLimitingPostLaunchJob : IPostLaunchJob
+{
+	public void Run(Process process)
+	{
+		new Thread(() => limitProcessCores(process)).Start();
 	}
 
 	// Inspired by Miaa245's core limiting script.
@@ -72,4 +70,49 @@ public class GameLauncher
 		}
 		catch { }
 	}
+}
+
+public partial class GameLauncher
+{
+	private readonly ILogger<GameLauncher> _logger;
+	private readonly IEnumerable<IPostLaunchJob> _postLaunchJobs; // postLaunchPipeline?
+
+	public GameLauncher(
+		ILogger<GameLauncher> logger,
+		IEnumerable<IPostLaunchJob> postLaunchJobs)
+	{
+		_logger = logger;
+		_postLaunchJobs = postLaunchJobs;
+	}
+
+	public void Launch(string path)
+	{
+		logLaunching(path);
+
+		// TODO: Treat Process as the IDisposable it is.
+		var process = new Process();
+		process.StartInfo.FileName = path;
+		try
+		{
+			process.Start();
+		}
+		catch(Exception e)
+		{
+			logFailedLaunch(e);
+			return;
+		}
+
+		foreach (var job in _postLaunchJobs)
+			job.Run(process);
+	}
+
+	[LoggerMessage(
+		Level = LogLevel.Information,
+		Message = "Launching game at {path}")]
+	private partial void logLaunching(string path);
+
+	[LoggerMessage(
+		Level = LogLevel.Error,
+		Message = "Failed to start the game process.")]
+	private partial void logFailedLaunch(Exception exception);
 }
