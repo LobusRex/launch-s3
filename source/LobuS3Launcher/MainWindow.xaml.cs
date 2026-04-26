@@ -1,4 +1,8 @@
 ﻿using Common;
+using GameLaunch;
+using LobuS3Launcher.Composition;
+using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 using System.Windows;
 
 namespace LobuS3Launcher;
@@ -8,9 +12,15 @@ namespace LobuS3Launcher;
 /// </summary>
 public partial class MainWindow : Window
 {
+	private readonly GameLauncher _gameLauncher;
+
 	public MainWindow()
 	{
 		InitializeComponent();
+
+		var serviceProvider = ServiceLocator.Instance.Services;
+
+		_gameLauncher = serviceProvider.GetRequiredService<GameLauncher>();
 
 		Loaded += MainWindow_Loaded;
 	}
@@ -21,17 +31,26 @@ public partial class MainWindow : Window
 		modsTab.TabItemActions = tabItemActions;
 	}
 
-	private async void LaunchButton_Click(object sender, RoutedEventArgs e)
+	private async void launchButton_Click(object sender, RoutedEventArgs e)
 	{
 		// Get the path to the base game installation.
-		string? baseGamePath = GameDirectory.BaseGamePath;
-		if (baseGamePath == null)
+		string? binPath = GameDirectory.BaseGamePath;
+		if (binPath == null)
 		{
 			await ErrorDialog.Show("Unable to get the game location from the Windows Registry.");
 			return;
 		}
 
-		// Launch the game.
-		Launcher.Launch(baseGamePath, true);
+		var gamePath = Path.Combine(binPath, getExeName());
+
+		_gameLauncher.Launch(path: gamePath);
+	}
+
+	private string getExeName()
+	{
+		if (ExpansionManager.GetSelectionEnabled())
+			return GameDirectory.NewGame;
+		else
+			return GameDirectory.OldGame;
 	}
 }

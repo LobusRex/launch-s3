@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\ExpansionEnabler\ExpansionEnabler.csproj" />
+    <ProjectReference Include="..\GameLaunch\GameLaunch.csproj" />
   </ItemGroup>
 
   <ItemGroup>
