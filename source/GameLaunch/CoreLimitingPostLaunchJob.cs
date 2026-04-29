@@ -22,9 +22,9 @@ public partial class CoreLimitingPostLaunchJob : IPostLaunchJob
 		_logger = logger;
 	}
 
-	public void Run(Process process)
+	public async Task RunAsync(Process process)
 	{
-		new Thread(() => limitProcessCores(process)).Start();
+		await limitProcessCores(process).ConfigureAwait(false);
 	}
 
 	// Inspired by Miaa245's core limiting script.
@@ -34,7 +34,7 @@ public partial class CoreLimitingPostLaunchJob : IPostLaunchJob
 	/// Limits the number of cores used by a process for a short amount of time.
 	/// </summary>
 	/// <param name="process">The process to limit.</param>
-	private void limitProcessCores(Process process)
+	private async Task limitProcessCores(Process process)
 	{
 		logRunningLimiter();
 
@@ -45,7 +45,7 @@ public partial class CoreLimitingPostLaunchJob : IPostLaunchJob
 			process.ProcessorAffinity = _limitedProcessorAffinity;
 
 			// Delay long enough for the fix to have an effect.
-			Thread.Sleep(_duration);
+			await Task.Delay(_duration).ConfigureAwait(false);
 
 			if (!process.HasExited)
 			{

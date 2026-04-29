@@ -4,5 +4,5 @@ namespace GameLaunch;
 
 public interface IPostLaunchJob
 {
-	public void Run(Process process);
+	public Task RunAsync(Process process);
 }

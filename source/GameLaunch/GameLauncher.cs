@@ -6,7 +6,7 @@ namespace GameLaunch;
 public partial class GameLauncher
 {
 	private readonly ILogger<GameLauncher> _logger;
-	private readonly IEnumerable<IPostLaunchJob> _postLaunchJobs; // postLaunchPipeline?
+	private readonly IEnumerable<IPostLaunchJob> _postLaunchJobs;
 
 	public GameLauncher(
 		ILogger<GameLauncher> logger,
@@ -16,14 +16,11 @@ public partial class GameLauncher
 		_postLaunchJobs = postLaunchJobs;
 	}
 
-	public void Launch(string path)
+	public async Task LaunchAsync(string path)
 	{
 		logLaunching(path);
 
-		// TODO: Treat Process as the IDisposable it is.
-		// We cannot dispose of it before all jobs are finished with it.
-
-		var process = new Process();
+		using var process = new Process();
 		process.StartInfo.FileName = path;
 		try
 		{
@@ -35,8 +32,9 @@ public partial class GameLauncher
 			return;
 		}
 
-		foreach (var job in _postLaunchJobs)
-			job.Run(process);
+		var jobTasks = _postLaunchJobs.Select(j => j.RunAsync(process));
+
+		await Task.WhenAll(jobTasks).ConfigureAwait(false);
 	}
 
 	[LoggerMessage(

@@ -12,15 +12,9 @@ public partial class QuitAfter10 : IPostLaunchJob
 		_logger = logger;
 	}
 
-	public void Run(Process process)
+	public async Task RunAsync(Process process)
 	{
-		// I don't know how thread-bad this is...
-		new Thread(() => kill(process)).Start();
-	}
-
-	private void kill(Process process)
-	{
-		Thread.Sleep(TimeSpan.FromSeconds(10));
+		await Task.Delay(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
 
 		process.Kill();
 		logProcessKilled();

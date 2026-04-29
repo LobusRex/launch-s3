@@ -22,10 +22,10 @@ public partial class MainWindow : Window
 
 		_gameLauncher = serviceProvider.GetRequiredService<GameLauncher>();
 
-		Loaded += MainWindow_Loaded;
+		Loaded += mainWindow_Loaded;
 	}
 
-	private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+	private void mainWindow_Loaded(object sender, RoutedEventArgs e)
 	{
 		expansionTab.TabItemActions = tabItemActions;
 		modsTab.TabItemActions = tabItemActions;
@@ -43,7 +43,8 @@ public partial class MainWindow : Window
 
 		var gamePath = Path.Combine(binPath, getExeName());
 
-		_gameLauncher.Launch(path: gamePath);
+		// We don't await the Task because there is no reason to block the UI.
+		_ = _gameLauncher.LaunchAsync(path: gamePath);
 	}
 
 	private string getExeName()
