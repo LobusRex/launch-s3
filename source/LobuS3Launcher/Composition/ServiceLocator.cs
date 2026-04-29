@@ -1,4 +1,5 @@
-﻿using LobuS3Launcher.ExpansionConfiguration;
+﻿using GameLaunch;
+using LobuS3Launcher.ExpansionConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -23,6 +24,12 @@ internal class ServiceLocator
 		builder.Services
 			.AddOptions<ExpansionsSection>()
 			.BindConfiguration(ExpansionsSection.SectionName);
+
+		builder.Services.AddSingleton<GameLauncher>();
+
+		// TODO: Feature toggle these from appsettings?
+		builder.Services.AddSingleton<IPostLaunchJob, CoreLimitingPostLaunchJob>();
+		builder.Services.AddSingleton<IPostLaunchJob, QuitAfter10>();
 
 		var host = builder.Build();
 

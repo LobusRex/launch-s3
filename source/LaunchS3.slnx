@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="Common/Common.csproj" />
   <Project Path="ExpansionEnabler/ExpansionEnabler.csproj" />
+  <Project Path="GameLaunch/GameLaunch.csproj" Id="d40d89f2-e21e-4c16-bf4b-6f94c5eee527" />
   <Project Path="LobuS3Launcher/LobuS3Launcher.csproj" />
 </Solution>
