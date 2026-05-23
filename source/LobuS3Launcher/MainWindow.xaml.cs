@@ -1,4 +1,7 @@
 ﻿using Common;
+using LobuS3Launcher.Composition;
+using LobuS3Launcher.Navigation;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
 namespace LobuS3Launcher;
@@ -12,16 +15,15 @@ public partial class MainWindow : Window
 	{
 		InitializeComponent();
 
-		Loaded += MainWindow_Loaded;
+		var tabSelector = ServiceLocator
+			.Instance
+			.Services
+			.GetRequiredService<TabSelector>();
+
+		tabSelector.TabControl = tabControl;
 	}
 
-	private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-	{
-		expansionTab.TabItemActions = tabItemActions;
-		modsTab.TabItemActions = tabItemActions;
-	}
-
-	private async void LaunchButton_Click(object sender, RoutedEventArgs e)
+	private async void launchButton_Click(object sender, RoutedEventArgs e)
 	{
 		// Get the path to the base game installation.
 		string? baseGamePath = GameDirectory.BaseGamePath;
@@ -31,7 +33,6 @@ public partial class MainWindow : Window
 			return;
 		}
 
-		// Launch the game.
 		Launcher.Launch(baseGamePath, true);
 	}
 }

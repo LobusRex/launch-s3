@@ -1,7 +1,9 @@
 ﻿using Common;
+using LobuS3Launcher.Composition;
+using LobuS3Launcher.Navigation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using ModernWpf.Controls;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -14,11 +16,16 @@ namespace LobuS3Launcher.Tabs;
 /// </summary>
 public partial class ModsTab : UserControl
 {
-	public TabItem? TabItemActions { get; set; } = null;
+	private readonly TabSelector _tabSelector;
 
 	public ModsTab()
 	{
 		InitializeComponent();
+
+		var serviceProvider = ServiceLocator.Instance.Services;
+
+		_tabSelector = serviceProvider
+			.GetRequiredService<TabSelector>();
 
 		Loaded += modsTab_Loaded;
 	}
@@ -170,18 +177,8 @@ public partial class ModsTab : UserControl
 		UpdateCheckBoxes();
 	}
 
-	private void Hyperlink_Click(object sender, RoutedEventArgs e)
+	private void hyperlink_Click(object sender, RoutedEventArgs e)
 	{
-		if (TabItemActions == null)
-			return;
-
-		try
-		{
-			TabItem tabItem = (TabItem)Parent;
-			TabControl tabControl = (TabControl)tabItem.Parent;
-
-			Dispatcher.BeginInvoke((Action)(() => tabControl.SelectedItem = TabItemActions));
-		}
-		catch { return; }
+		_tabSelector.NavigateTo<ActionsTab>();
 	}
 }

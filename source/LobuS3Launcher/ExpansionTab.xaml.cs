@@ -4,7 +4,7 @@ using LaunchS3.Expansions.Configuration;
 using LobuS3Launcher.Composition;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
+using LobuS3Launcher.Navigation;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -24,22 +24,23 @@ public partial class ExpansionTab : UserControl
 		.. SPPanel.Children.OfType<ExpansionControl>()
 		];
 
-	public TabItem? TabItemActions { get; set; } = null;
+	private readonly TabSelector _tabSelector;
 
 	public ExpansionTab()
 	{
 		InitializeComponent();
 
-		var expansions = ServiceLocator
-			.Instance
-			.Services
+		var serviceProvider = ServiceLocator.Instance.Services;
+
+		var expansions = serviceProvider
 			.GetRequiredService<IOptions<ExpansionsSection>>()
 			.Value;
 
-		_expansionService = ServiceLocator
-			.Instance
-			.Services
+		_expansionService = serviceProvider
 			.GetRequiredService<IExpansionService>();
+
+		_tabSelector = serviceProvider
+			.GetRequiredService<TabSelector>();
 
 		// This should probably be in ExpansionTab_Loaded.
 		// For now, it is left here because it caused a noticable delay when switching tabs.
@@ -97,18 +98,8 @@ public partial class ExpansionTab : UserControl
 			expansion.UpdateControls();
 	}
 
-	private void Hyperlink_Click(object sender, RoutedEventArgs e)
+	private void hyperlink_Click(object sender, RoutedEventArgs e)
 	{
-		if (TabItemActions == null)
-			return;
-
-		try
-		{
-			TabItem tabItem = (TabItem)Parent;
-			TabControl tabControl = (TabControl)tabItem.Parent;
-
-			Dispatcher.BeginInvoke((Action)(() => tabControl.SelectedItem = TabItemActions));
-		}
-		catch { return; }
+		_tabSelector.NavigateTo<ActionsTab>();
 	}
 }
