@@ -1,7 +1,7 @@
 ﻿using Common;
 using LaunchS3.Expansions;
+using LaunchS3.Expansions.Configuration;
 using LobuS3Launcher.Composition;
-using LobuS3Launcher.ExpansionConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -67,9 +67,8 @@ public partial class ExpansionTab : UserControl
 
 	private ExpansionControl createExpansionControl(ExpansionItem expansion)
 	{
-		return new ExpansionControl(new Expansion(expansion.Key), _expansionService)
+		return new ExpansionControl(expansion, _expansionService)
 		{
-			Title = expansion.Name,
 			Margin = new Thickness(0, 10, 0, 0),
 		};
 	}

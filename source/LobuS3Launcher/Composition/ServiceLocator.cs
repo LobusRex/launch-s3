@@ -1,6 +1,4 @@
 ﻿using LaunchS3.Expansions;
-using LobuS3Launcher.ExpansionConfiguration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
@@ -21,11 +19,7 @@ internal class ServiceLocator
 	{
 		var builder = Host.CreateApplicationBuilder();
 
-		builder.Services
-			.AddOptions<ExpansionsSection>()
-			.BindConfiguration(ExpansionsSection.SectionName);
-
-		builder.Services.AddSingleton<IExpansionService, ExpansionService>();
+		builder.Services.AddExpansions();
 
 		var host = builder.Build();
 
