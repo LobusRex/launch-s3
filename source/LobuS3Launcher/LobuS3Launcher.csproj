@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\ExpansionEnabler\ExpansionEnabler.csproj" />
+    <ProjectReference Include="..\LaunchS3.Expansions\LaunchS3.Expansions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
