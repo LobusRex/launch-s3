@@ -22,6 +22,6 @@ public partial class QuitAfter10 : IPostLaunchJob
 
 	[LoggerMessage(
 		Level = LogLevel.Information,
-		Message = $"The game was killed by {nameof(QuitAfter10)}")]
+		Message = $"The game was killed by {nameof(QuitAfter10)}.")]
 	private partial void logProcessKilled();
 }

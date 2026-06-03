@@ -67,7 +67,7 @@ public partial class CoreLimitingPostLaunchJob : IPostLaunchJob
 
 	[LoggerMessage(
 		Level = LogLevel.Debug,
-		Message = "")]
+		Message = "The game is still running.")]
 	private partial void logStillRunning();
 
 	[LoggerMessage(

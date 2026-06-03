@@ -39,7 +39,7 @@ public partial class GameLauncher
 
 	[LoggerMessage(
 		Level = LogLevel.Information,
-		Message = "Launching game at {path}")]
+		Message = "Launching game at {path}.")]
 	private partial void logLaunching(string path);
 
 	[LoggerMessage(
