@@ -1,6 +1,8 @@
 ﻿using Common;
 using GameLaunch;
 using LobuS3Launcher.Composition;
+using LobuS3Launcher.Navigation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
@@ -22,13 +24,8 @@ public partial class MainWindow : Window
 
 		_gameLauncher = serviceProvider.GetRequiredService<GameLauncher>();
 
-		Loaded += mainWindow_Loaded;
-	}
-
-	private void mainWindow_Loaded(object sender, RoutedEventArgs e)
-	{
-		expansionTab.TabItemActions = tabItemActions;
-		modsTab.TabItemActions = tabItemActions;
+		var tabSelector = serviceProvider.GetRequiredService<TabSelector>();
+		tabSelector.TabControl = tabControl;
 	}
 
 	private async void launchButton_Click(object sender, RoutedEventArgs e)
