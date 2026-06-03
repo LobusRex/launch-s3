@@ -25,11 +25,7 @@ internal class ServiceLocator
 			.AddOptions<ExpansionsSection>()
 			.BindConfiguration(ExpansionsSection.SectionName);
 
-		builder.Services.AddSingleton<GameLauncher>();
-
-		// TODO: Feature toggle these from appsettings?
-		builder.Services.AddSingleton<IPostLaunchJob, CoreLimitingPostLaunchJob>();
-		builder.Services.AddSingleton<IPostLaunchJob, QuitAfter10>();
+		builder.Services.AddGameLaunch();
 
 		var host = builder.Build();
 
