@@ -3,7 +3,6 @@ using GameLaunch;
 using LobuS3Launcher.Composition;
 using LobuS3Launcher.Navigation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
 
