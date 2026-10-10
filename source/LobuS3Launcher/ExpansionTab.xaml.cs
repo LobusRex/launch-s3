@@ -2,9 +2,9 @@
 using LaunchS3.Expansions;
 using LaunchS3.Expansions.Configuration;
 using LobuS3Launcher.Composition;
+using LobuS3Launcher.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using LobuS3Launcher.Navigation;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
