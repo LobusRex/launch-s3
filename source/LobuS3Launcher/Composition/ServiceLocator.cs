@@ -1,8 +1,7 @@
 ﻿using GameLaunch;
-using LobuS3Launcher.ExpansionConfiguration;
+using LaunchS3.Expansions;
 using LobuS3Launcher.Navigation;
 using Microsoft.Extensions.DependencyInjection;
-using LaunchS3.Expansions;
 using Microsoft.Extensions.Hosting;
 using System;
 
