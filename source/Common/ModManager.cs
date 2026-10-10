@@ -40,8 +40,8 @@ public static class ModManager
 		try
 		{
 			// Download FrameworkSetup.zip.
-			using HttpClient HttpClient = new HttpClient();
-			using Stream data = await HttpClient.GetStreamAsync(FrameworkSetupUrl);
+			using HttpClient httpClient = new HttpClient();
+			using Stream data = await httpClient.GetStreamAsync(FrameworkSetupUrl);
 
 			// Extract the archive to the game documents folder.
 			ZipArchive archive = new ZipArchive(data, ZipArchiveMode.Read);
