@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace LobuS3Launcher.ExpansionConfiguration;
+﻿namespace LaunchS3.Expansions.Configuration;
 
 public class ExpansionsSection
 {

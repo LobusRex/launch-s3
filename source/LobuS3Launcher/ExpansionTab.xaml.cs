@@ -1,6 +1,7 @@
 ﻿using Common;
+using LaunchS3.Expansions;
+using LaunchS3.Expansions.Configuration;
 using LobuS3Launcher.Composition;
-using LobuS3Launcher.ExpansionConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using LobuS3Launcher.Navigation;
@@ -16,6 +17,8 @@ namespace LobuS3Launcher.Tabs;
 /// </summary>
 public partial class ExpansionTab : UserControl
 {
+	private readonly IExpansionService _expansionService;
+
 	private IEnumerable<ExpansionControl> ExpansionControls => [
 		.. EPPanel.Children.OfType<ExpansionControl>(),
 		.. SPPanel.Children.OfType<ExpansionControl>()
@@ -32,6 +35,9 @@ public partial class ExpansionTab : UserControl
 		var expansions = serviceProvider
 			.GetRequiredService<IOptions<ExpansionsSection>>()
 			.Value;
+
+		_expansionService = serviceProvider
+			.GetRequiredService<IExpansionService>();
 
 		_tabSelector = serviceProvider
 			.GetRequiredService<TabSelector>();
@@ -60,20 +66,12 @@ public partial class ExpansionTab : UserControl
 			SPPanel.Children.Add(stuff);
 	}
 
-	private static ExpansionControl createExpansionControl(string title, string gameKey)
-	{
-		return new ExpansionControl(new Expansion(gameKey))
-		{
-			Title = title,
-			Margin = new Thickness(0, 10, 0, 0),
-		};
-	}
-
 	private ExpansionControl createExpansionControl(ExpansionItem expansion)
 	{
-		return createExpansionControl(
-			title: expansion.Name,
-			gameKey: expansion.Key);
+		return new ExpansionControl(expansion, _expansionService)
+		{
+			Margin = new Thickness(0, 10, 0, 0),
+		};
 	}
 
 	private void ExpansionTab_Loaded(object sender, RoutedEventArgs e)

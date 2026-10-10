@@ -83,14 +83,6 @@ public class Expansion
 		IsSelected = true;
 	}
 
-	public void Deselect()
-	{
-		// Delete the game key from SimL.
-		MachineRegistry.DeleteKey(MachineRegistry.SimLKey, GameKey);
-
-		IsSelected = false;
-	}
-
 	public void SetPreferredSource(ExpansionSource source)
 	{
 		Update();
