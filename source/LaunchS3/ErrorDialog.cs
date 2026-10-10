@@ -1,7 +1,7 @@
 ﻿using ModernWpf.Controls;
 using System.Threading.Tasks;
 
-namespace LobuS3Launcher;
+namespace LaunchS3;
 
 public static class ErrorDialog
 {

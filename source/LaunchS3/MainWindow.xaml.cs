@@ -1,12 +1,12 @@
 ﻿using Common;
 using GameLaunch;
-using LobuS3Launcher.Composition;
-using LobuS3Launcher.Navigation;
+using LaunchS3.Composition;
+using LaunchS3.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Windows;
 
-namespace LobuS3Launcher;
+namespace LaunchS3;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

@@ -1,11 +1,11 @@
 ﻿using GameLaunch;
 using LaunchS3.Expansions;
-using LobuS3Launcher.Navigation;
+using LaunchS3.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
-namespace LobuS3Launcher.Composition;
+namespace LaunchS3.Composition;
 
 /// <summary>
 /// A way to configure services in a central place.
