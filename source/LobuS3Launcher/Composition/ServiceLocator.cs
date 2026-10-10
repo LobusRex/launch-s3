@@ -1,4 +1,6 @@
-﻿using LobuS3Launcher.Navigation;
+﻿using GameLaunch;
+using LobuS3Launcher.ExpansionConfiguration;
+using LobuS3Launcher.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using LaunchS3.Expansions;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +26,8 @@ internal class ServiceLocator
 		builder.Services.AddExpansions();
 
 		builder.Services.AddSingleton<TabSelector>();
+
+		builder.Services.AddGameLaunch();
 
 		var host = builder.Build();
 
