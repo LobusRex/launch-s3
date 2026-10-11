@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace LobuS3Launcher.Tabs;
+namespace LaunchS3.Tabs;
 
 /// <summary>
 /// Interaction logic for ExpansionControl.xaml

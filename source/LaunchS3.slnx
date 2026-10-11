@@ -6,5 +6,5 @@
   <Project Path="ExpansionEnabler/ExpansionEnabler.csproj" />
   <Project Path="GameLaunch/GameLaunch.csproj" />
   <Project Path="LaunchS3.Expansions/LaunchS3.Expansions.csproj" />
-  <Project Path="LobuS3Launcher/LobuS3Launcher.csproj" />
+  <Project Path="LaunchS3/LaunchS3.csproj" />
 </Solution>

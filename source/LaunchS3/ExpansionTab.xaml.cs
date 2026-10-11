@@ -1,8 +1,8 @@
 ﻿using Common;
+using LaunchS3.Composition;
 using LaunchS3.Expansions;
 using LaunchS3.Expansions.Configuration;
-using LobuS3Launcher.Composition;
-using LobuS3Launcher.Navigation;
+using LaunchS3.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace LobuS3Launcher.Tabs;
+namespace LaunchS3.Tabs;
 
 /// <summary>
 /// Interaction logic for ExpansionTab.xaml

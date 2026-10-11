@@ -1,6 +1,6 @@
 ﻿using Common;
-using LobuS3Launcher.Composition;
-using LobuS3Launcher.Navigation;
+using LaunchS3.Composition;
+using LaunchS3.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using ModernWpf.Controls;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace LobuS3Launcher.Tabs;
+namespace LaunchS3.Tabs;
 
 /// <summary>
 /// Interaction logic for ModsTab.xaml

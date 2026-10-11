@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace LobuS3Launcher;
+namespace LaunchS3;
 
 /// <summary>
 /// Interaction logic for App.xaml

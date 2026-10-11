@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
 
-namespace LobuS3Launcher.Navigation;
+namespace LaunchS3.Navigation;
 
 internal class TabSelector
 {
